@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Renewal Incentive Optimizer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&family=Roboto+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy-950:#0E1B30;
+    --navy-900:#152747;
+    --navy-800:#1E355C;
+    --ivory:#EDE9DE;
+    --ivory-dim:#B9BFC9;
+    --gold:#C9A24B;
+    --gold-dim:#8C7638;
+    --teal:#4F8378;
+    --danger:#C4694A;
+    --line: rgba(237,233,222,0.12);
+    --radius: 3px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background: var(--navy-950);
+    color: var(--ivory);
+    font-family: 'Inter', sans-serif;
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+  ::selection{ background: var(--gold-dim); color: var(--ivory); }
+
+  .wrap{
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 0 32px 80px;
+  }
+
+  header{
+    padding: 56px 0 40px;
+    border-bottom: 1px solid var(--line);
+    display:flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .brand-mark{
+    font-family:'Fraunces', serif;
+    font-size: 15px;
+    letter-spacing: 0.02em;
+    color: var(--gold);
+    margin-bottom: 18px;
+  }
+  h1{
+    font-family:'Fraunces', serif;
+    font-weight: 500;
+    font-size: clamp(32px, 4.2vw, 48px);
+    line-height: 1.08;
+    margin: 0 0 12px;
+    max-width: 640px;
+  }
+  header p{
+    color: var(--ivory-dim);
+    max-width: 460px;
+    margin: 0;
+    font-size: 15px;
+  }
+
+  .api-row{
+    display:flex;
+    align-items:center;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--ivory-dim);
+    min-width: 320px;
+  }
+  .api-row input{
+    flex:1;
+    background: var(--navy-900);
+    border: 1px solid var(--line);
+    color: var(--ivory);
+    padding: 9px 12px;
+    border-radius: var(--radius);
+    font-family: 'Roboto Mono', monospace;
+    font-size: 12.5px;
+  }
+  .api-row input:focus{ outline: 1px solid var(--gold); border-color: var(--gold); }
+  .dot{ width:7px; height:7px; border-radius:50%; background:var(--ivory-dim); flex-shrink:0; }
+  .dot.ok{ background:#7FAE86; }
+  .dot.bad{ background:var(--danger); }
+
+  main{
+    display: grid;
+    grid-template-columns: 1.15fr 1fr;
+    gap: 48px;
+    margin-top: 48px;
+    align-items: start;
+  }
+  @media (max-width: 880px){
+    main{ grid-template-columns: 1fr; }
+  }
+
+  .card{
+    background: var(--navy-900);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 36px;
+  }
+
+  .section-title{
+    font-family:'Fraunces', serif;
+    font-size: 19px;
+    margin: 0 0 4px;
+  }
+  .section-sub{
+    color: var(--ivory-dim);
+    font-size: 13px;
+    margin: 0 0 28px;
+  }
+
+  .grid-2{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px 18px;
+  }
+  .field{ display:flex; flex-direction:column; gap:7px; }
+  .field.full{ grid-column: 1 / -1; }
+  label{
+    font-size: 12.5px;
+    color: var(--ivory-dim);
+  }
+  input[type="number"], select{
+    background: var(--navy-950);
+    border: 1px solid var(--line);
+    color: var(--ivory);
+    padding: 11px 12px;
+    border-radius: var(--radius);
+    font-family: 'Roboto Mono', monospace;
+    font-size: 13.5px;
+    width: 100%;
+  }
+  select{ font-family:'Inter', sans-serif; font-size: 14px; }
+  input:focus, select:focus{ outline:none; border-color: var(--gold); }
+  input::placeholder{ color: rgba(237,233,222,0.3); }
+
+  .hint{ font-size: 11.5px; color: rgba(185,191,201,0.7); margin-top: 2px; }
+
+  .submit-row{
+    margin-top: 30px;
+    display:flex;
+    align-items:center;
+    gap: 18px;
+    flex-wrap: wrap;
+  }
+  button.primary{
+    background: var(--gold);
+    color: var(--navy-950);
+    border: none;
+    padding: 13px 26px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: background 0.15s ease, transform 0.1s ease;
+  }
+  button.primary:hover{ background: #D9B564; }
+  button.primary:active{ transform: translateY(1px); }
+  button.primary:disabled{ background: var(--gold-dim); cursor: progress; }
+
+  button.ghost{
+    background: transparent;
+    border: 1px solid var(--line);
+    color: var(--ivory-dim);
+    padding: 12px 18px;
+    font-size: 13px;
+    border-radius: var(--radius);
+    cursor: pointer;
+  }
+  button.ghost:hover{ color: var(--ivory); border-color: var(--ivory-dim); }
+
+  .error-box{
+    margin-top: 20px;
+    padding: 14px 16px;
+    border: 1px solid rgba(196,105,74,0.4);
+    background: rgba(196,105,74,0.08);
+    color: #E3AF9C;
+    font-size: 13px;
+    border-radius: var(--radius);
+    display:none;
+  }
+
+  /* Result panel */
+  .result-card{ position: sticky; top: 32px; }
+
+  .result-empty{
+    color: var(--ivory-dim);
+    font-size: 14px;
+    padding: 20px 0 4px;
+  }
+
+  .result-headline{
+    display:flex;
+    align-items: baseline;
+    gap: 10px;
+    margin: 6px 0 26px;
+  }
+  .result-headline .amount{
+    font-family:'Fraunces', serif;
+    font-size: 44px;
+    color: var(--gold);
+  }
+  .result-headline .label{
+    color: var(--ivory-dim);
+    font-size: 13px;
+  }
+
+  .metric-row{
+    display:flex;
+    justify-content: space-between;
+    align-items:center;
+    padding: 14px 0;
+    border-top: 1px solid var(--line);
+  }
+  .metric-row:first-of-type{ border-top: none; }
+  .metric-row .m-label{ font-size: 13.5px; color: var(--ivory-dim); }
+  .metric-row .m-value{ font-family:'Roboto Mono', monospace; font-size: 15px; }
+
+  .badge{
+    display:inline-block;
+    font-size: 11px;
+    letter-spacing: 0.01em;
+    padding: 3px 9px;
+    border-radius: 100px;
+    border: 1px solid var(--teal);
+    color: var(--teal);
+  }
+  .badge.zero{ border-color: var(--ivory-dim); color: var(--ivory-dim); }
+
+  .loading-line{
+    height: 2px;
+    width: 100%;
+    background: var(--navy-800);
+    overflow: hidden;
+    border-radius: 2px;
+    margin-top: 24px;
+    display:none;
+  }
+  .loading-line span{
+    display:block;
+    height:100%;
+    width: 40%;
+    background: var(--gold);
+    animation: slide 1s ease-in-out infinite;
+  }
+  @keyframes slide{
+    0%{ transform: translateX(-100%); }
+    100%{ transform: translateX(250%); }
+  }
+
+  footer{
+    margin-top: 64px;
+    padding-top: 24px;
+    border-top: 1px solid var(--line);
+    color: var(--ivory-dim);
+    font-size: 12.5px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div>
+      <div class="brand-mark">Renewal Desk</div>
+      <h1>Find the incentive that keeps a policy on the books.</h1>
+      <p>Enter a policyholder's details and the model returns the renewal-boosting incentive that maximizes expected revenue.</p>
+    </div>
+    <div class="api-row">
+      <span class="dot" id="apiDot"></span>
+      <input type="text" id="apiUrl" placeholder="https://your-backend.onrender.com/predict" value="">
+    </div>
+  </header>
+
+  <main>
+    <div class="card">
+      <div class="section-title">Policyholder details</div>
+      <div class="section-sub">All numeric fields accept decimals.</div>
+
+      <form id="predictForm">
+        <div class="grid-2">
+
+          <div class="field">
+            <label for="perc_premium_paid_by_cash_credit">% premium paid by cash/credit</label>
+            <input type="number" step="any" id="perc_premium_paid_by_cash_credit" placeholder="0.00 – 1.00" required>
+          </div>
+
+          <div class="field">
+            <label for="age_in_days">Age (in days)</label>
+            <input type="number" step="any" id="age_in_days" placeholder="e.g. 14600" required>
+          </div>
+
+          <div class="field">
+            <label for="Income">Income</label>
+            <input type="number" step="any" id="Income" placeholder="e.g. 355060" required>
+          </div>
+
+          <div class="field">
+            <label for="premium">Premium</label>
+            <input type="number" step="any" id="premium" placeholder="e.g. 12000" required>
+          </div>
+
+          <div class="field">
+            <label for="Count_3_6">Late 3–6 months (count)</label>
+            <input type="number" step="any" id="Count_3_6" placeholder="0" required>
+          </div>
+
+          <div class="field">
+            <label for="Count_6_12">Late 6–12 months (count)</label>
+            <input type="number" step="any" id="Count_6_12" placeholder="0" required>
+          </div>
+
+          <div class="field">
+            <label for="Count_12">Late 12+ months (count)</label>
+            <input type="number" step="any" id="Count_12" placeholder="0" required>
+          </div>
+
+          <div class="field">
+            <label for="application_underwriting_score">Underwriting score</label>
+            <input type="number" step="any" id="application_underwriting_score" placeholder="e.g. 99.02" required>
+          </div>
+
+          <div class="field">
+            <label for="no_of_premiums_paid">No. of premiums paid</label>
+            <input type="number" step="any" id="no_of_premiums_paid" placeholder="e.g. 6" required>
+          </div>
+
+          <div class="field">
+            <label for="sourcing_channel">Sourcing channel</label>
+            <select id="sourcing_channel" required>
+              <option value="A">A</option>
+              <option value="B">B</option>
+              <option value="C">C</option>
+              <option value="D">D</option>
+              <option value="E">E</option>
+            </select>
+          </div>
+
+          <div class="field full">
+            <label for="residence_area_type">Residence area type</label>
+            <select id="residence_area_type" required>
+              <option value="Urban">Urban</option>
+              <option value="Rural">Rural</option>
+            </select>
+          </div>
+
+        </div>
+
+        <div class="submit-row">
+          <button type="submit" class="primary" id="submitBtn">Calculate optimal incentive</button>
+          <button type="button" class="ghost" id="fillSample">Fill sample values</button>
+        </div>
+
+        <div class="loading-line" id="loadingLine"><span></span></div>
+        <div class="error-box" id="errorBox"></div>
+      </form>
+    </div>
+
+    <div class="card result-card">
+      <div class="section-title">Recommendation</div>
+      <div class="section-sub">Based on the highest expected net revenue</div>
+
+      <div id="resultEmpty" class="result-empty">Fill in the form and calculate to see a recommendation here.</div>
+
+      <div id="resultBody" style="display:none;">
+        <div class="result-headline">
+          <span class="amount" id="revAmount">₹0</span>
+          <span class="label">expected revenue</span>
+        </div>
+
+        <div class="metric-row">
+          <span class="m-label">Recommended incentive</span>
+          <span class="m-value" id="incAmount">—</span>
+        </div>
+        <div class="metric-row">
+          <span class="m-label">Premium</span>
+          <span class="m-value" id="premAmount">—</span>
+        </div>
+        <div class="metric-row">
+          <span class="m-label">Status</span>
+          <span id="statusBadge" class="badge">—</span>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    Set the backend URL above once — it's remembered in this browser. The calculation runs on your FastAPI model; nothing here is stored server-side.
+  </footer>
+
+</div>
+
+<script>
+const STORAGE_KEY = "renewal_api_url";
+const apiInput = document.getElementById("apiUrl");
+const apiDot = document.getElementById("apiDot");
+
+const savedUrl = localStorage.getItem(STORAGE_KEY);
+if (savedUrl) apiInput.value = savedUrl;
+
+apiInput.addEventListener("change", () => {
+  localStorage.setItem(STORAGE_KEY, apiInput.value.trim());
+  apiDot.className = "dot";
+});
+
+document.getElementById("fillSample").addEventListener("click", () => {
+  document.getElementById("perc_premium_paid_by_cash_credit").value = 0.43;
+  document.getElementById("age_in_days").value = 14730;
+  document.getElementById("Income").value = 355060;
+  document.getElementById("premium").value = 12000;
+  document.getElementById("Count_3_6").value = 0;
+  document.getElementById("Count_6_12").value = 0;
+  document.getElementById("Count_12").value = 0;
+  document.getElementById("application_underwriting_score").value = 99.02;
+  document.getElementById("no_of_premiums_paid").value = 6;
+  document.getElementById("sourcing_channel").value = "A";
+  document.getElementById("residence_area_type").value = "Urban";
+});
+
+const form = document.getElementById("predictForm");
+const submitBtn = document.getElementById("submitBtn");
+const errorBox = document.getElementById("errorBox");
+const loadingLine = document.getElementById("loadingLine");
+const resultEmpty = document.getElementById("resultEmpty");
+const resultBody = document.getElementById("resultBody");
+
+function fmtCurrency(n){
+  return "₹" + Number(n).toLocaleString("en-IN", { maximumFractionDigits: 0 });
+}
+
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  errorBox.style.display = "none";
+
+  const apiUrl = apiInput.value.trim();
+  if (!apiUrl) {
+    errorBox.textContent = "https://insurance-incentive-prediction-1.onrender.com/predict";
+    errorBox.style.display = "block";
+    return;
+  }
+
+  const row = [
+    parseFloat(document.getElementById("perc_premium_paid_by_cash_credit").value),
+    parseFloat(document.getElementById("age_in_days").value),
+    parseFloat(document.getElementById("Income").value),
+    parseFloat(document.getElementById("Count_3_6").value),
+    parseFloat(document.getElementById("Count_6_12").value),
+    parseFloat(document.getElementById("Count_12").value),
+    parseFloat(document.getElementById("application_underwriting_score").value),
+    parseFloat(document.getElementById("no_of_premiums_paid").value),
+    document.getElementById("sourcing_channel").value,
+    document.getElementById("residence_area_type").value,
+    parseFloat(document.getElementById("premium").value),
+  ];
+
+  submitBtn.disabled = true;
+  submitBtn.textContent = "Calculating…";
+  loadingLine.style.display = "block";
+
+  try {
+    const response = await fetch(apiUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ data: [row] }),
+    });
+
+    if (!response.ok) {
+      const errText = await response.text();
+      throw new Error(`Server responded with ${response.status}: ${errText}`);
+    }
+
+    const json = await response.json();
+    apiDot.className = "dot ok";
+
+    const result = json.Result && json.Result[0];
+    if (!result) throw new Error("Unexpected response shape from the API.");
+
+    document.getElementById("revAmount").textContent = fmtCurrency(result.revenue);
+    document.getElementById("incAmount").textContent = fmtCurrency(result.incentive);
+    document.getElementById("premAmount").textContent = fmtCurrency(result.premium);
+
+    const badge = document.getElementById("statusBadge");
+    if (result.incentive > 0) {
+      badge.textContent = "Incentive recommended";
+      badge.className = "badge";
+    } else {
+      badge.textContent = "No incentive needed";
+      badge.className = "badge zero";
+    }
+
+    resultEmpty.style.display = "none";
+    resultBody.style.display = "block";
+
+  } catch (err) {
+    apiDot.className = "dot bad";
+    errorBox.textContent = err.message || "Something went wrong while contacting the backend.";
+    errorBox.style.display = "block";
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = "Calculate optimal incentive";
+    loadingLine.style.display = "none";
+  }
+});
+</script>
+
+</body>
+</html>

@@ -1,6 +1,6 @@
 import requests
 
-url = "https://insurance-incentive-prediction.onrender.com/predict"
+url = "https://adarsh-insurance-incentive-prediction.onrender.com/predict"
 payload = {
 "data":[
     [
