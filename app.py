@@ -11,7 +11,16 @@ from pydantic import BaseModel
 
 # Initializing the FastAPI application.
 app = FastAPI()
-
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "https://adarsh-insurance-incentive-predicti.vercel.app"
+        
+    ],
+    allow_credentials=False,
+    allow_methods=["POST", "OPTIONS"],
+    allow_headers=["Content-Type"],
+)
 
 # Defining the structure of the incoming request data.
 # The API expects a list of lists containing customer information.
