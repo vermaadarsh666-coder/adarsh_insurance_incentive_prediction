@@ -7,7 +7,7 @@ import numpy as np
 # and handling HTTP exceptions.
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
-
+from fastapi.middleware.cors import CORSMiddleware
 
 # Initializing the FastAPI application.
 app = FastAPI()
@@ -15,7 +15,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "https://adarsh-insurance-incentive-predicti.vercel.app"
-        
+       
     ],
     allow_credentials=False,
     allow_methods=["POST", "OPTIONS"],
