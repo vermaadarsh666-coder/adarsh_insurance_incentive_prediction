@@ -1,520 +1,753 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Renewal Incentive Optimizer</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Underwriter's Desk — Renewal &amp; Incentive Estimator</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&family=Roboto+Mono:wght@500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600;6..72,700&family=Work+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    --navy-950:#0E1B30;
-    --navy-900:#152747;
-    --navy-800:#1E355C;
-    --ivory:#EDE9DE;
-    --ivory-dim:#B9BFC9;
-    --gold:#C9A24B;
-    --gold-dim:#8C7638;
-    --teal:#4F8378;
-    --danger:#C4694A;
-    --line: rgba(237,233,222,0.12);
-    --radius: 3px;
+    --bg-deep:#0E2A24;
+    --bg-deep-2:#123A31;
+    --paper:#EFF3ED;
+    --paper-2:#F8FAF7;
+    --ink:#1B2E27;
+    --ink-soft:#52685F;
+    --gold:#C98A2B;
+    --gold-dark:#A16E1E;
+    --gold-light:#E3B968;
+    --rose:#B54B3C;
+    --positive:#2F7A5E;
+    --line: rgba(27,46,39,0.14);
+    --radius: 12px;
+    --shadow-card: 0 24px 60px -24px rgba(14,42,36,0.6);
   }
+
   *{box-sizing:border-box;}
-  html,body{margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
   body{
-    background: var(--navy-950);
-    color: var(--ivory);
-    font-family: 'Inter', sans-serif;
-    line-height: 1.5;
-    min-height: 100vh;
+    margin:0;
+    background:
+      linear-gradient(180deg, var(--bg-deep) 0%, var(--bg-deep-2) 100%);
+    background-image:
+      repeating-linear-gradient(0deg, rgba(227,185,104,0.035) 0px, rgba(227,185,104,0.035) 1px, transparent 1px, transparent 64px),
+      repeating-linear-gradient(90deg, rgba(227,185,104,0.035) 0px, rgba(227,185,104,0.035) 1px, transparent 1px, transparent 64px),
+      linear-gradient(180deg, var(--bg-deep) 0%, var(--bg-deep-2) 100%);
+    color:var(--paper-2);
+    font-family:'Work Sans', system-ui, sans-serif;
+    min-height:100vh;
   }
-  ::selection{ background: var(--gold-dim); color: var(--ivory); }
 
   .wrap{
-    max-width: 1180px;
-    margin: 0 auto;
-    padding: 0 32px 80px;
+    max-width:1180px;
+    margin:0 auto;
+    padding: 52px 24px 84px;
   }
 
-  header{
-    padding: 56px 0 40px;
-    border-bottom: 1px solid var(--line);
+  /* ---------- header ---------- */
+  header.top{
     display:flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    gap: 24px;
-    flex-wrap: wrap;
+    align-items:flex-end;
+    justify-content:space-between;
+    gap:24px;
+    margin-bottom:46px;
+    border-bottom:1px solid rgba(239,243,237,0.14);
+    padding-bottom:26px;
+    flex-wrap:wrap;
   }
-  .brand-mark{
-    font-family:'Fraunces', serif;
-    font-size: 15px;
-    letter-spacing: 0.02em;
-    color: var(--gold);
-    margin-bottom: 18px;
-  }
-  h1{
-    font-family:'Fraunces', serif;
-    font-weight: 500;
-    font-size: clamp(32px, 4.2vw, 48px);
-    line-height: 1.08;
-    margin: 0 0 12px;
-    max-width: 640px;
-  }
-  header p{
-    color: var(--ivory-dim);
-    max-width: 460px;
-    margin: 0;
-    font-size: 15px;
-  }
-
-  .api-row{
+  .brand{
     display:flex;
     align-items:center;
-    gap: 10px;
-    font-size: 13px;
-    color: var(--ivory-dim);
-    min-width: 320px;
+    gap:16px;
   }
-  .api-row input{
-    flex:1;
-    background: var(--navy-900);
-    border: 1px solid var(--line);
-    color: var(--ivory);
-    padding: 9px 12px;
-    border-radius: var(--radius);
-    font-family: 'Roboto Mono', monospace;
-    font-size: 12.5px;
+  .brand-mark{
+    width:46px;height:46px;
+    border:1.5px solid var(--gold-light);
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Newsreader', serif;
+    font-style:italic;
+    font-weight:500;
+    font-size:20px;
+    color:var(--gold-light);
+    flex-shrink:0;
+    transform:rotate(45deg);
   }
-  .api-row input:focus{ outline: 1px solid var(--gold); border-color: var(--gold); }
-  .dot{ width:7px; height:7px; border-radius:50%; background:var(--ivory-dim); flex-shrink:0; }
-  .dot.ok{ background:#7FAE86; }
-  .dot.bad{ background:var(--danger); }
+  .brand-mark span{transform:rotate(-45deg);display:block;}
+  .brand-text .eyebrow{
+    font-size:12.5px;
+    color:rgba(239,243,237,0.55);
+    margin:0 0 3px;
+    font-weight:500;
+    font-style:italic;
+    font-family:'Newsreader', serif;
+  }
+  .brand-text h1{
+    font-family:'Newsreader', serif;
+    font-size:29px;
+    font-weight:600;
+    margin:0;
+    color:var(--paper-2);
+    letter-spacing:-0.01em;
+  }
+  header.top p.tagline{
+    max-width:360px;
+    margin:0;
+    font-size:14.5px;
+    line-height:1.6;
+    color:rgba(239,243,237,0.68);
+  }
 
-  main{
-    display: grid;
-    grid-template-columns: 1.15fr 1fr;
-    gap: 48px;
-    margin-top: 48px;
-    align-items: start;
+  /* ---------- layout ---------- */
+  .desk{
+    display:grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap:26px;
+    align-items:start;
   }
   @media (max-width: 880px){
-    main{ grid-template-columns: 1fr; }
+    .desk{grid-template-columns:1fr;}
   }
 
   .card{
-    background: var(--navy-900);
-    border: 1px solid var(--line);
+    background:var(--paper);
+    color:var(--ink);
     border-radius: var(--radius);
-    padding: 36px;
+    box-shadow: var(--shadow-card);
+    position:relative;
+    overflow:hidden;
+    border:1px solid rgba(201,138,43,0.18);
   }
 
-  .section-title{
-    font-family:'Fraunces', serif;
-    font-size: 19px;
-    margin: 0 0 4px;
+  /* ---------- form card ---------- */
+  form.ledger{
+    padding: 36px 34px 30px;
   }
-  .section-sub{
-    color: var(--ivory-dim);
-    font-size: 13px;
-    margin: 0 0 28px;
+  .ledger h2{
+    font-family:'Newsreader', serif;
+    font-size:21px;
+    font-weight:600;
+    margin:0 0 3px;
+  }
+  .ledger .sub{
+    font-size:13px;
+    color:var(--ink-soft);
+    margin:0 0 28px;
   }
 
-  .grid-2{
+  fieldset{
+    border:none;
+    padding:0;
+    margin:0 0 26px;
+  }
+  fieldset legend{
+    font-family:'Newsreader', serif;
+    font-style:italic;
+    font-size:15px;
+    color:var(--gold-dark);
+    padding:0 0 9px;
+    border-bottom:1px solid var(--line);
+    width:100%;
+    margin-bottom:17px;
+  }
+
+  .row{
     display:grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px 18px;
+    grid-template-columns: repeat(2, 1fr);
+    gap:16px 18px;
   }
-  .field{ display:flex; flex-direction:column; gap:7px; }
-  .field.full{ grid-column: 1 / -1; }
-  label{
-    font-size: 12.5px;
-    color: var(--ivory-dim);
+  .row.three{grid-template-columns: repeat(3, 1fr);}
+  @media (max-width: 520px){
+    .row, .row.three{grid-template-columns: 1fr;}
   }
-  input[type="number"], select{
-    background: var(--navy-950);
-    border: 1px solid var(--line);
-    color: var(--ivory);
-    padding: 11px 12px;
-    border-radius: var(--radius);
-    font-family: 'Roboto Mono', monospace;
-    font-size: 13.5px;
-    width: 100%;
-  }
-  select{ font-family:'Inter', sans-serif; font-size: 14px; }
-  input:focus, select:focus{ outline:none; border-color: var(--gold); }
-  input::placeholder{ color: rgba(237,233,222,0.3); }
 
-  .hint{ font-size: 11.5px; color: rgba(185,191,201,0.7); margin-top: 2px; }
+  .field label{
+    display:block;
+    font-size:12.5px;
+    font-weight:600;
+    color:var(--ink);
+    margin-bottom:6px;
+  }
+  .field .hint{
+    display:block;
+    font-size:11px;
+    color:var(--ink-soft);
+    font-weight:400;
+    margin-top:1px;
+    font-style:italic;
+  }
+  .field input[type="number"],
+  .field select{
+    width:100%;
+    padding:10px 12px;
+    border-radius:6px;
+    border:1px solid var(--line);
+    background:var(--paper-2);
+    color:var(--ink);
+    font-family:'JetBrains Mono', monospace;
+    font-size:13.5px;
+    outline:none;
+    transition:border-color .15s ease, box-shadow .15s ease;
+  }
+  .field select{font-family:'Work Sans',sans-serif;}
+  .field input[type="number"]:focus,
+  .field select:focus,
+  .field input[type="range"]:focus-visible{
+    border-color:var(--gold);
+    box-shadow:0 0 0 3px rgba(201,138,43,0.2);
+  }
+
+  .slider-field{grid-column: 1 / -1;}
+  .slider-head{
+    display:flex;justify-content:space-between;align-items:baseline;
+    margin-bottom:7px;
+  }
+  .slider-value{
+    font-family:'JetBrains Mono', monospace;
+    font-size:13px;
+    color:var(--gold-dark);
+    font-weight:600;
+  }
+  input[type="range"]{
+    -webkit-appearance:none;
+    width:100%;
+    height:4px;
+    border-radius:2px;
+    background:var(--line);
+    accent-color:var(--gold);
+  }
+
+  .toggle-group{
+    display:flex;
+    gap:8px;
+    background:var(--paper-2);
+    padding:3px;
+    border-radius:8px;
+    border:1px solid var(--line);
+  }
+  .toggle-group button{
+    flex:1;
+    padding:8px 10px;
+    border-radius:5px;
+    border:none;
+    background:transparent;
+    color:var(--ink-soft);
+    font-family:'Work Sans',sans-serif;
+    font-size:13px;
+    font-weight:600;
+    cursor:pointer;
+    transition:all .15s ease;
+  }
+  .toggle-group button.active{
+    background:var(--ink);
+    color:var(--paper-2);
+  }
 
   .submit-row{
-    margin-top: 30px;
+    margin-top:8px;
     display:flex;
     align-items:center;
-    gap: 18px;
-    flex-wrap: wrap;
+    gap:14px;
+    flex-wrap:wrap;
   }
-  button.primary{
-    background: var(--gold);
-    color: var(--navy-950);
-    border: none;
-    padding: 13px 26px;
-    font-family: 'Inter', sans-serif;
-    font-weight: 600;
-    font-size: 14px;
-    border-radius: var(--radius);
-    cursor: pointer;
-    transition: background 0.15s ease, transform 0.1s ease;
+  button.submit{
+    background:var(--rose);
+    color:var(--paper-2);
+    border:none;
+    padding:14px 28px;
+    border-radius:7px;
+    font-family:'Work Sans',sans-serif;
+    font-size:14px;
+    font-weight:600;
+    letter-spacing:0.01em;
+    cursor:pointer;
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    transition:background .15s ease, transform .1s ease;
   }
-  button.primary:hover{ background: #D9B564; }
-  button.primary:active{ transform: translateY(1px); }
-  button.primary:disabled{ background: var(--gold-dim); cursor: progress; }
-
-  button.ghost{
-    background: transparent;
-    border: 1px solid var(--line);
-    color: var(--ivory-dim);
-    padding: 12px 18px;
-    font-size: 13px;
-    border-radius: var(--radius);
-    cursor: pointer;
-  }
-  button.ghost:hover{ color: var(--ivory); border-color: var(--ivory-dim); }
-
-  .error-box{
-    margin-top: 20px;
-    padding: 14px 16px;
-    border: 1px solid rgba(196,105,74,0.4);
-    background: rgba(196,105,74,0.08);
-    color: #E3AF9C;
-    font-size: 13px;
-    border-radius: var(--radius);
+  button.submit:hover{background:#9C3E30;}
+  button.submit:active{transform:translateY(1px);}
+  button.submit:disabled{opacity:0.65; cursor:progress;}
+  .spin{
+    width:13px;height:13px;border-radius:50%;
+    border:2px solid rgba(248,250,247,0.35);
+    border-top-color:var(--paper-2);
+    animation:spin 0.8s linear infinite;
     display:none;
   }
+  button.submit.loading .spin{display:inline-block;}
+  @keyframes spin{to{transform:rotate(360deg);}}
 
-  /* Result panel */
-  .result-card{ position: sticky; top: 32px; }
-
-  .result-empty{
-    color: var(--ivory-dim);
-    font-size: 14px;
-    padding: 20px 0 4px;
+  .cold-note{
+    font-size:11.5px;
+    color:var(--ink-soft);
+    margin:0;
+    max-width:270px;
+    line-height:1.45;
+    font-style:italic;
   }
 
-  .result-headline{
+  /* ---------- result card ---------- */
+  .result-card{
+    padding: 36px 30px;
+    min-height: 430px;
     display:flex;
-    align-items: baseline;
-    gap: 10px;
-    margin: 6px 0 26px;
+    flex-direction:column;
   }
-  .result-headline .amount{
-    font-family:'Fraunces', serif;
-    font-size: 44px;
-    color: var(--gold);
+  .result-card h2{
+    font-family:'Newsreader', serif;
+    font-size:21px;
+    font-weight:600;
+    margin:0 0 3px;
   }
-  .result-headline .label{
-    color: var(--ivory-dim);
-    font-size: 13px;
+  .result-card .sub{
+    font-size:13px;
+    color:var(--ink-soft);
+    margin:0 0 22px;
   }
 
-  .metric-row{
+  .empty-state{
+    flex:1;
     display:flex;
-    justify-content: space-between;
+    flex-direction:column;
     align-items:center;
-    padding: 14px 0;
-    border-top: 1px solid var(--line);
+    justify-content:center;
+    text-align:center;
+    color:var(--ink-soft);
+    gap:16px;
+    padding: 20px 10px;
   }
-  .metric-row:first-of-type{ border-top: none; }
-  .metric-row .m-label{ font-size: 13.5px; color: var(--ivory-dim); }
-  .metric-row .m-value{ font-family:'Roboto Mono', monospace; font-size: 15px; }
+  .empty-state .ring{
+    width:70px;height:70px;
+    border:1.5px dashed rgba(27,46,39,0.28);
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Newsreader', serif;
+    font-style:italic;
+    font-size:12px;
+    color:rgba(27,46,39,0.4);
+    transform:rotate(45deg);
+  }
+  .empty-state .ring span{transform:rotate(-45deg);}
+  .empty-state p{
+    font-size:13px;
+    max-width:220px;
+    margin:0;
+    line-height:1.55;
+  }
 
-  .badge{
+  .error-state{
+    flex:1;
+    display:none;
+    flex-direction:column;
+    justify-content:center;
+    gap:10px;
+    padding:10px 4px;
+  }
+  .error-state.show{display:flex;}
+  .error-state .stamp-label{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    letter-spacing:0.04em;
+    color:var(--rose);
+    border:1px solid var(--rose);
     display:inline-block;
-    font-size: 11px;
-    letter-spacing: 0.01em;
-    padding: 3px 9px;
-    border-radius: 100px;
-    border: 1px solid var(--teal);
-    color: var(--teal);
+    padding:3px 9px;
+    border-radius:4px;
+    width:fit-content;
   }
-  .badge.zero{ border-color: var(--ivory-dim); color: var(--ivory-dim); }
+  .error-state p{
+    font-size:13.5px;
+    color:var(--ink);
+    line-height:1.55;
+    margin:0;
+  }
 
-  .loading-line{
-    height: 2px;
-    width: 100%;
-    background: var(--navy-800);
-    overflow: hidden;
-    border-radius: 2px;
-    margin-top: 24px;
+  .result-body{
     display:none;
+    flex:1;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:24px;
+    text-align:center;
+    width:100%;
   }
-  .loading-line span{
-    display:block;
-    height:100%;
-    width: 40%;
-    background: var(--gold);
-    animation: slide 1s ease-in-out infinite;
+  .result-body.show{display:flex;}
+
+  /* rate-tag motif instead of a circular wax seal */
+  .rate-tag{
+    position:relative;
+    background:var(--paper-2);
+    border:1.5px solid var(--gold);
+    border-radius:8px;
+    padding:18px 30px;
+    min-width:210px;
+    animation: tagIn 0.45s cubic-bezier(.2,1.2,.4,1) both;
   }
-  @keyframes slide{
-    0%{ transform: translateX(-100%); }
-    100%{ transform: translateX(250%); }
+  .rate-tag::before{
+    content:"";
+    position:absolute;
+    left:-9px; top:50%;
+    transform:translateY(-50%);
+    width:16px;height:16px;
+    border-radius:50%;
+    background:var(--bg-deep-2);
+    border:1.5px solid var(--gold);
+  }
+  .rate-tag .tag-label{
+    font-family:'JetBrains Mono', monospace;
+    font-size:10.5px;
+    letter-spacing:0.06em;
+    color:var(--gold-dark);
+    margin-bottom:5px;
+  }
+  .rate-tag .tag-value{
+    font-family:'Newsreader', serif;
+    font-size:30px;
+    font-weight:600;
+    color:var(--ink);
+    line-height:1.1;
+  }
+  .rate-tag .tag-sub{
+    font-family:'JetBrains Mono', monospace;
+    font-size:9.5px;
+    color:var(--ink-soft);
+    margin-top:5px;
+  }
+
+  @keyframes tagIn{
+    0%{opacity:0; transform:translateY(10px) scale(0.96);}
+    100%{opacity:1; transform:translateY(0) scale(1);}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .rate-tag{animation:none;}
+  }
+
+  .figures{
+    width:100%;
+    display:flex;
+    justify-content:center;
+    gap:30px;
+    border-top:1px solid var(--line);
+    padding-top:22px;
+  }
+  .figure .flabel{
+    font-family:'JetBrains Mono', monospace;
+    font-size:10.5px;
+    letter-spacing:0.04em;
+    color:var(--ink-soft);
+    margin-bottom:5px;
+  }
+  .figure .fvalue{
+    font-family:'JetBrains Mono', monospace;
+    font-size:15px;
+    font-weight:600;
+    color:var(--ink);
+  }
+  .figure .fvalue.rev-pos{color:var(--positive);}
+  .figure .fvalue.rev-neg{color:var(--rose);}
+
+  .note{
+    font-size:11.5px;
+    color:var(--ink-soft);
+    max-width:280px;
+    line-height:1.5;
+    margin:0;
+    font-style:italic;
   }
 
   footer{
-    margin-top: 64px;
-    padding-top: 24px;
-    border-top: 1px solid var(--line);
-    color: var(--ivory-dim);
-    font-size: 12.5px;
+    margin-top:54px;
+    text-align:center;
+    font-size:11.5px;
+    color:rgba(239,243,237,0.4);
+    font-style:italic;
   }
 </style>
 </head>
 <body>
 <div class="wrap">
 
-  <header>
-    <div>
-      <div class="brand-mark">Renewal Desk</div>
-      <h1>Find the incentive that keeps a policy on the books.</h1>
-      <p>Enter a policyholder's details and the model returns the renewal-boosting incentive that maximizes expected revenue.</p>
+  <header class="top">
+    <div class="brand">
+      <div class="brand-mark"><span>UD</span></div>
+      <div class="brand-text">
+        <p class="eyebrow">The underwriter's desk</p>
+        <h1>Renewal &amp; Incentive Estimator</h1>
+      </div>
     </div>
-    <div class="api-row">
-      <span class="dot" id="apiDot"></span>
-      <input type="text" id="apiUrl" placeholder="https://insurance-incentive-prediction-1.onrender.com/predict" value="">
-    </div>
+    <p class="tagline">Enter a policyholder's details to see how likely they are to renew, and the incentive that earns the most net revenue on this policy.</p>
   </header>
 
-  <main>
+  <div class="desk">
+
+    <!-- FORM -->
     <div class="card">
-      <div class="section-title">Policyholder details</div>
-      <div class="section-sub">All numeric fields accept decimals.</div>
+      <form class="ledger" id="policyForm">
+        <h2>Policy entry</h2>
+        <p class="sub">All fields are required for an accurate estimate.</p>
 
-      <form id="predictForm">
-        <div class="grid-2">
-
-          <div class="field">
-            <label for="perc_premium_paid_by_cash_credit">% premium paid by cash/credit</label>
-            <input type="number" step="any" id="perc_premium_paid_by_cash_credit" placeholder="0.00 – 1.00" required>
+        <fieldset>
+          <legend>Policyholder</legend>
+          <div class="row three">
+            <div class="field">
+              <label for="age">Age<span class="hint">in years</span></label>
+              <input type="number" id="age" min="18" max="100" step="1" value="46" required>
+            </div>
+            <div class="field">
+              <label for="income">Annual income<span class="hint">₹ per year</span></label>
+              <input type="number" id="income" min="0" step="100" value="360050" required>
+            </div>
+            <div class="field">
+              <label>Residence area</label>
+              <div class="toggle-group" id="residenceToggle">
+                <button type="button" data-value="Urban" class="active">Urban</button>
+                <button type="button" data-value="Rural">Rural</button>
+              </div>
+            </div>
           </div>
+        </fieldset>
 
-          <div class="field">
-            <label for="age_in_days">Age (in days)</label>
-            <input type="number" step="any" id="age_in_days" placeholder="e.g. 14600" required>
+        <fieldset>
+          <legend>Payment history</legend>
+          <div class="row">
+            <div class="slider-field">
+              <div class="slider-head">
+                <label for="percCash" style="margin:0;">Premium paid by cash / credit</label>
+                <span class="slider-value" id="percCashValue">97%</span>
+              </div>
+              <input type="range" id="percCash" min="0" max="100" step="1" value="97">
+            </div>
           </div>
-
-          <div class="field">
-            <label for="Income">Income</label>
-            <input type="number" step="any" id="Income" placeholder="e.g. 355060" required>
+          <div class="row three" style="margin-top:16px;">
+            <div class="field">
+              <label for="late36">Late 3–6 months<span class="hint">number of times</span></label>
+              <input type="number" id="late36" min="0" step="1" value="0" required>
+            </div>
+            <div class="field">
+              <label for="late612">Late 6–12 months<span class="hint">number of times</span></label>
+              <input type="number" id="late612" min="0" step="1" value="0" required>
+            </div>
+            <div class="field">
+              <label for="lateMore12">Late 12+ months<span class="hint">number of times</span></label>
+              <input type="number" id="lateMore12" min="0" step="1" value="0" required>
+            </div>
           </div>
+        </fieldset>
 
-          <div class="field">
-            <label for="premium">Premium</label>
-            <input type="number" step="any" id="premium" placeholder="e.g. 12000" required>
+        <fieldset>
+          <legend>Policy details</legend>
+          <div class="row three">
+            <div class="field">
+              <label for="score">Underwriting score<span class="hint">0–100</span></label>
+              <input type="number" id="score" min="0" max="100" step="0.01" value="99.7" required>
+            </div>
+            <div class="field">
+              <label for="numPremiums">Premiums paid<span class="hint">count so far</span></label>
+              <input type="number" id="numPremiums" min="0" step="1" value="9" required>
+            </div>
+            <div class="field">
+              <label for="channel">Sourcing channel</label>
+              <select id="channel">
+                <option value="A">A</option>
+                <option value="B">B</option>
+                <option value="C">C</option>
+                <option value="D" selected>D</option>
+                <option value="E">E</option>
+              </select>
+            </div>
           </div>
-
-          <div class="field">
-            <label for="Count_3_6">Late 3–6 months (count)</label>
-            <input type="number" step="any" id="Count_3_6" placeholder="0" required>
+          <div class="row" style="margin-top:16px;">
+            <div class="field" style="grid-column:1 / -1;">
+              <label for="premium">Premium amount<span class="hint">₹ due this cycle</span></label>
+              <input type="number" id="premium" min="0" step="1" value="3300" required>
+            </div>
           </div>
-
-          <div class="field">
-            <label for="Count_6_12">Late 6–12 months (count)</label>
-            <input type="number" step="any" id="Count_6_12" placeholder="0" required>
-          </div>
-
-          <div class="field">
-            <label for="Count_12">Late 12+ months (count)</label>
-            <input type="number" step="any" id="Count_12" placeholder="0" required>
-          </div>
-
-          <div class="field">
-            <label for="application_underwriting_score">Underwriting score</label>
-            <input type="number" step="any" id="application_underwriting_score" placeholder="e.g. 99.02" required>
-          </div>
-
-          <div class="field">
-            <label for="no_of_premiums_paid">No. of premiums paid</label>
-            <input type="number" step="any" id="no_of_premiums_paid" placeholder="e.g. 6" required>
-          </div>
-
-          <div class="field">
-            <label for="sourcing_channel">Sourcing channel</label>
-            <select id="sourcing_channel" required>
-              <option value="A">A</option>
-              <option value="B">B</option>
-              <option value="C">C</option>
-              <option value="D">D</option>
-              <option value="E">E</option>
-            </select>
-          </div>
-
-          <div class="field full">
-            <label for="residence_area_type">Residence area type</label>
-            <select id="residence_area_type" required>
-              <option value="Urban">Urban</option>
-              <option value="Rural">Rural</option>
-            </select>
-          </div>
-
-        </div>
+        </fieldset>
 
         <div class="submit-row">
-          <button type="submit" class="primary" id="submitBtn">Calculate optimal incentive</button>
-          <button type="button" class="ghost" id="fillSample">Fill sample values</button>
+          <button type="submit" class="submit" id="submitBtn">
+            <span class="spin"></span>
+            <span class="btn-label">Calculate incentive</span>
+          </button>
+          <p class="cold-note">First calculation after a while can take up to a minute — the server is waking up.</p>
         </div>
-
-        <div class="loading-line" id="loadingLine"><span></span></div>
-        <div class="error-box" id="errorBox"></div>
       </form>
     </div>
 
+    <!-- RESULT -->
     <div class="card result-card">
-      <div class="section-title">Recommendation</div>
-      <div class="section-sub">Based on the highest expected net revenue</div>
+      <h2>Result</h2>
+      <p class="sub">Recommended agent incentive for this policy</p>
 
-      <div id="resultEmpty" class="result-empty">Fill in the form and calculate to see a recommendation here.</div>
+      <div class="empty-state" id="emptyState">
+        <div class="ring"><span>n/a</span></div>
+        <p>Fill in the policy entry and calculate to see the recommended incentive here.</p>
+      </div>
 
-      <div id="resultBody" style="display:none;">
-        <div class="result-headline">
-          <span class="amount" id="revAmount">₹0</span>
-          <span class="label">expected revenue</span>
-        </div>
+      <div class="error-state" id="errorState">
+        <span class="stamp-label">entry rejected</span>
+        <p id="errorMessage">Something went wrong.</p>
+      </div>
 
-        <div class="metric-row">
-          <span class="m-label">Recommended incentive</span>
-          <span class="m-value" id="incAmount">—</span>
+      <div class="result-body" id="resultBody">
+        <div class="rate-tag">
+          <div class="tag-label">offer</div>
+          <div class="tag-value" id="incentiveValue">₹0</div>
+          <div class="tag-sub">incentive</div>
         </div>
-        <div class="metric-row">
-          <span class="m-label">Premium</span>
-          <span class="m-value" id="premAmount">—</span>
+        <div class="figures">
+          <div class="figure">
+            <div class="flabel">Premium</div>
+            <div class="fvalue" id="premiumValue">₹0</div>
+          </div>
+          <div class="figure">
+            <div class="flabel">Net revenue</div>
+            <div class="fvalue" id="revenueValue">₹0</div>
+          </div>
         </div>
-        <div class="metric-row">
-          <span class="m-label">Status</span>
-          <span id="statusBadge" class="badge">—</span>
-        </div>
+        <p class="note">This is the incentive that maximizes projected net revenue after payout, based on the model's renewal probability for this policy.</p>
       </div>
     </div>
-  </main>
 
-  <footer>
-    Set the backend URL above once — it's remembered in this browser. The calculation runs on your FastAPI model; nothing here is stored server-side.
-  </footer>
+  </div>
 
+  <footer>The underwriter's desk · estimates are model-based projections, not guarantees</footer>
 </div>
 
 <script>
-const STORAGE_KEY = "renewal_api_url";
-const apiInput = document.getElementById("apiUrl");
-const apiDot = document.getElementById("apiDot");
+  const API_URL = "https://insurance-incentive-prediction-1.onrender.com/predict";
 
-const savedUrl = localStorage.getItem(STORAGE_KEY);
-if (savedUrl) apiInput.value = savedUrl;
+  // residence toggle
+  const residenceToggle = document.getElementById('residenceToggle');
+  let residenceValue = 'Urban';
+  residenceToggle.addEventListener('click', (e) => {
+    const btn = e.target.closest('button');
+    if(!btn) return;
+    [...residenceToggle.children].forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    residenceValue = btn.dataset.value;
+  });
 
-apiInput.addEventListener("change", () => {
-  localStorage.setItem(STORAGE_KEY, apiInput.value.trim());
-  apiDot.className = "dot";
-});
+  // slider live value
+  const percCash = document.getElementById('percCash');
+  const percCashValue = document.getElementById('percCashValue');
+  percCash.addEventListener('input', () => {
+    percCashValue.textContent = percCash.value + '%';
+  });
 
-document.getElementById("fillSample").addEventListener("click", () => {
-  document.getElementById("perc_premium_paid_by_cash_credit").value = 0.43;
-  document.getElementById("age_in_days").value = 14730;
-  document.getElementById("Income").value = 355060;
-  document.getElementById("premium").value = 12000;
-  document.getElementById("Count_3_6").value = 0;
-  document.getElementById("Count_6_12").value = 0;
-  document.getElementById("Count_12").value = 0;
-  document.getElementById("application_underwriting_score").value = 99.02;
-  document.getElementById("no_of_premiums_paid").value = 6;
-  document.getElementById("sourcing_channel").value = "A";
-  document.getElementById("residence_area_type").value = "Urban";
-});
+  const form = document.getElementById('policyForm');
+  const submitBtn = document.getElementById('submitBtn');
+  const btnLabel = submitBtn.querySelector('.btn-label');
 
-const form = document.getElementById("predictForm");
-const submitBtn = document.getElementById("submitBtn");
-const errorBox = document.getElementById("errorBox");
-const loadingLine = document.getElementById("loadingLine");
-const resultEmpty = document.getElementById("resultEmpty");
-const resultBody = document.getElementById("resultBody");
+  const emptyState = document.getElementById('emptyState');
+  const errorState = document.getElementById('errorState');
+  const errorMessage = document.getElementById('errorMessage');
+  const resultBody = document.getElementById('resultBody');
 
-function fmtCurrency(n){
-  return "₹" + Number(n).toLocaleString("en-IN", { maximumFractionDigits: 0 });
-}
+  const incentiveValue = document.getElementById('incentiveValue');
+  const premiumValue = document.getElementById('premiumValue');
+  const revenueValue = document.getElementById('revenueValue');
 
-form.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  errorBox.style.display = "none";
-
-  const apiUrl = apiInput.value.trim();
-  if (!apiUrl) {
-    errorBox.textContent = "https://insurance-incentive-prediction-1.onrender.com/predict";
-    errorBox.style.display = "block";
-    return;
+  function money(n){
+    return '₹' + Number(n).toLocaleString('en-IN', {maximumFractionDigits: 0});
   }
 
-  const row = [
-    parseFloat(document.getElementById("perc_premium_paid_by_cash_credit").value),
-    parseFloat(document.getElementById("age_in_days").value),
-    parseFloat(document.getElementById("Income").value),
-    parseFloat(document.getElementById("Count_3_6").value),
-    parseFloat(document.getElementById("Count_6_12").value),
-    parseFloat(document.getElementById("Count_12").value),
-    parseFloat(document.getElementById("application_underwriting_score").value),
-    parseFloat(document.getElementById("no_of_premiums_paid").value),
-    document.getElementById("sourcing_channel").value,
-    document.getElementById("residence_area_type").value,
-    parseFloat(document.getElementById("premium").value),
-  ];
-
-  submitBtn.disabled = true;
-  submitBtn.textContent = "Calculating…";
-  loadingLine.style.display = "block";
-
-  try {
-    const response = await fetch(apiUrl, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ data: [row] }),
-    });
-
-    if (!response.ok) {
-      const errText = await response.text();
-      throw new Error(`Server responded with ${response.status}: ${errText}`);
-    }
-
-    const json = await response.json();
-    apiDot.className = "dot ok";
-
-    const result = json.Result && json.Result[0];
-    if (!result) throw new Error("Unexpected response shape from the API.");
-
-    document.getElementById("revAmount").textContent = fmtCurrency(result.revenue);
-    document.getElementById("incAmount").textContent = fmtCurrency(result.incentive);
-    document.getElementById("premAmount").textContent = fmtCurrency(result.premium);
-
-    const badge = document.getElementById("statusBadge");
-    if (result.incentive > 0) {
-      badge.textContent = "Incentive recommended";
-      badge.className = "badge";
-    } else {
-      badge.textContent = "No incentive needed";
-      badge.className = "badge zero";
-    }
-
-    resultEmpty.style.display = "none";
-    resultBody.style.display = "block";
-
-  } catch (err) {
-    apiDot.className = "dot bad";
-    errorBox.textContent = err.message || "Something went wrong while contacting the backend.";
-    errorBox.style.display = "block";
-  } finally {
-    submitBtn.disabled = false;
-    submitBtn.textContent = "Calculate optimal incentive";
-    loadingLine.style.display = "none";
+  function showEmpty(){
+    emptyState.style.display = 'flex';
+    errorState.classList.remove('show');
+    resultBody.classList.remove('show');
   }
-});
+  function showError(msg){
+    emptyState.style.display = 'none';
+    resultBody.classList.remove('show');
+    errorMessage.textContent = msg;
+    errorState.classList.add('show');
+  }
+  function showResult(premium, revenue, incentive){
+    emptyState.style.display = 'none';
+    errorState.classList.remove('show');
+    // retrigger animation
+    resultBody.classList.remove('show');
+    void resultBody.offsetWidth;
+    incentiveValue.textContent = money(incentive);
+    premiumValue.textContent = money(premium);
+    revenueValue.textContent = money(revenue);
+    revenueValue.classList.toggle('rev-pos', revenue >= 0);
+    revenueValue.classList.toggle('rev-neg', revenue < 0);
+    resultBody.classList.add('show');
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const age = Number(document.getElementById('age').value);
+    const income = Number(document.getElementById('income').value);
+    const late36 = Number(document.getElementById('late36').value);
+    const late612 = Number(document.getElementById('late612').value);
+    const lateMore12 = Number(document.getElementById('lateMore12').value);
+    const score = Number(document.getElementById('score').value);
+    const numPremiums = Number(document.getElementById('numPremiums').value);
+    const channel = document.getElementById('channel').value;
+    const premium = Number(document.getElementById('premium').value);
+    const percCashDecimal = Number(percCash.value) / 100;
+
+    // exact column order the API expects:
+    // perc_premium_paid_by_cash_credit, age_in_days, Income,
+    // Count_3-6_months_late, Count_6-12_months_late, Count_more_than_12_months_late,
+    // application_underwriting_score, no_of_premiums_paid,
+    // sourcing_channel, residence_area_type, premium
+    const row = [
+      percCashDecimal,
+      age * 365,
+      income,
+      late36,
+      late612,
+      lateMore12,
+      score,
+      numPremiums,
+      channel,
+      residenceValue,
+      premium
+    ];
+
+    submitBtn.disabled = true;
+    submitBtn.classList.add('loading');
+    btnLabel.textContent = 'Consulting the ledger…';
+
+    try{
+      const res = await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ data: [row] })
+      });
+
+      if(!res.ok){
+        let detail = 'The server could not process this entry.';
+        try{
+          const errJson = await res.json();
+          if(errJson && errJson.detail) detail = errJson.detail;
+        }catch(_){}
+        throw new Error(detail);
+      }
+
+      const json = await res.json();
+      const result = json.Result && json.Result[0];
+      if(!result) throw new Error('The server returned no result for this entry.');
+
+      showResult(result.premium, result.revenue, result.incentive);
+    }catch(err){
+      showError(err.message || 'Could not reach the calculator. Please try again.');
+    }finally{
+      submitBtn.disabled = false;
+      submitBtn.classList.remove('loading');
+      btnLabel.textContent = 'Calculate incentive';
+    }
+  });
+
+  showEmpty();
 </script>
-
 </body>
 </html>
